@@ -28,6 +28,7 @@ import {
   Info
 } from 'lucide-react';
 import { EmailItem, DatasetMetrics, IngestedJobRecord } from './types';
+import { API_ENDPOINTS } from './config';
 
 export const App: React.FC = () => {
   const [records, setRecords] = useState<EmailItem[]>([]);
@@ -68,11 +69,11 @@ export const App: React.FC = () => {
   const handleLoadDefaultInbox = async () => {
     setIsAuditing(true);
     try {
-      const resSample = await fetch('/api/sample-inbox');
+      const resSample = await fetch(API_ENDPOINTS.sampleInbox);
       const sampleData = await resSample.json();
       const rawList = sampleData.emails || [];
 
-      const resAudit = await fetch('/api/audit-dataset', {
+      const resAudit = await fetch(API_ENDPOINTS.auditDataset, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ records: rawList }),
@@ -93,7 +94,7 @@ export const App: React.FC = () => {
   const handleLoadKaggleSample = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch('/api/sample-kaggle-csv');
+      const res = await fetch(API_ENDPOINTS.sampleKaggleCsv);
       const data = await res.json();
 
       if (data.success && data.records) {
@@ -121,7 +122,7 @@ export const App: React.FC = () => {
     formData.append('file', file);
 
     try {
-      const uploadRes = await fetch('/api/upload-csv', {
+      const uploadRes = await fetch(API_ENDPOINTS.uploadCsv, {
         method: 'POST',
         body: formData,
       });
@@ -145,7 +146,7 @@ export const App: React.FC = () => {
     if (itemsToAudit.length === 0) return;
     setIsAuditing(true);
     try {
-      const res = await fetch('/api/audit-dataset', {
+      const res = await fetch(API_ENDPOINTS.auditDataset, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ records: itemsToAudit }),
