@@ -1,0 +1,11 @@
+{
+  "name": "vigilanthire-root",
+  "private": true,
+  "scripts": {
+    "start": "node backend/dist/server.js",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build": "cd backend && npm run build && cp src/mockEmails.json dist/ && cd ../frontend && npm run build"
+  }
+}
+
