@@ -12,6 +12,7 @@ export interface IngestedJobRecord {
   hasQuestions?: boolean;
 }
 
+
 export interface EmailItem extends IngestedJobRecord {
   company?: string;
   role?: string;
