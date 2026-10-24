@@ -4,6 +4,25 @@ A corporate-grade, executive web platform designed to eliminate post-layoff recr
 
 ---
 
+### 🌐 Environment & Production API Configuration
+
+#### Frontend Environment Variable (`frontend/.env`):
+```env
+# In production, set to your deployed backend origin (e.g. https://api.careershield.yourdomain.com)
+# If left blank, requests use relative paths (/api/...) matching current origin or Vite dev proxy
+VITE_API_BASE_URL=
+```
+
+#### Centralized API Endpoints ([frontend/src/config.ts](file:///home/yagnesh/Desktop/Garbathon/frontend/src/config.ts)):
+All endpoints dynamically prepend `VITE_API_BASE_URL`:
+- `sampleInbox`: `${VITE_API_BASE_URL}/api/sample-inbox`
+- `sampleKaggleCsv`: `${VITE_API_BASE_URL}/api/sample-kaggle-csv`
+- `uploadCsv`: `${VITE_API_BASE_URL}/api/upload-csv`
+- `auditDataset`: `${VITE_API_BASE_URL}/api/audit-dataset`
+- `health`: `${VITE_API_BASE_URL}/api/health`
+
+---
+
 ### 🎨 Professional Light Theme & Aesthetics
 - **Page Background**: Warm off-white / light parchment (`#FAF9F6` / `#F8F7F4`).
 - **Cards & Containers**: Pure solid white (`#FFFFFF`) with thin borders (`#E5E0D8`).
@@ -22,7 +41,7 @@ A corporate-grade, executive web platform designed to eliminate post-layoff recr
 
 #### 1. CSV Parser & Ingestion Pipeline (`backend/src/csvParser.ts`)
 - Implements streaming CSV parsing with `csv-parser` and `multer`.
-- Automatically maps Kaggle Real/Fake Job Postings columns:
+- Automatically normalizes standard Kaggle Real/Fake Job Postings columns:
   - `job_id` / `id`
   - `title` / `role`
   - `company_profile` / `company`
@@ -33,7 +52,7 @@ A corporate-grade, executive web platform designed to eliminate post-layoff recr
 
 #### 2. REST Endpoints (`backend/src/server.ts`)
 1. `GET /api/sample-inbox`: Returns the original 15-email simulated post-layoff inbox.
-2. `GET /api/sample-kaggle-csv`: Delivers a pre-seeded Kaggle-format CSV benchmark dataset for instant 1-click evaluation.
+2. `GET /api/sample-kaggle-csv`: Delivers pre-parsed rows from the local `fake_job_postings.csv` file without transferring 48MB across the wire.
 3. `POST /api/upload-csv`: Ingests multipart `.csv` files or direct CSV strings, returning parsed records.
 4. `POST /api/audit-dataset`: Evaluates records using Gemini AI (`responseSchema`) or deterministic fallback, computes follow-up eligibility ($\ge 7$ days from `2026-10-24`), and computes ground truth validation accuracy percentage.
 5. `GET /api/health`: Operational health check.
